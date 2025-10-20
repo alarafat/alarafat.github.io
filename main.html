@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Arafat - AI & Vision Leader | Founder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            color: #cbd5e1; /* slate-300 */
+        }
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.8); /* slate-900 with opacity */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3); /* slate-700 with opacity */
+        }
+        .card-glass-effect {
+            background: rgba(30, 41, 59, 0.7); /* slate-800 with opacity */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.3); /* slate-700 with opacity */
+        }
+        /* .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        } */
+        .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        ::selection {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+        /* Horizontal scroll container for projects */
+        .horizontal-scroll-container {
+            position: relative;
+            width: 100%;
+        }
+        .horizontal-scroll-wrapper {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch; /* For smooth scrolling on mobile */
+            padding-bottom: 1.5rem; /* Space for scrollbar if visible */
+        }
+        /* Hide scrollbar for a cleaner look */
+        .horizontal-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        .horizontal-scroll-wrapper {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .project-card {
+            flex: 0 0 90%; /* On mobile, one card takes up 90% of the width */
+            scroll-snap-align: start; /* Snap to start of card */
+        }
+        @media (min-width: 768px) { .project-card { flex: 0 0 48%; } }
+        @media (min-width: 1024px) { .project-card { flex: 0 0 32%; } }
+        
+        .expertise-card {
+            background: #1e293b; /* slate-800 */
+            border: 1px solid #334155; /* slate-700 */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .expertise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.1), 0 4px 6px -2px rgba(56, 189, 248, 0.05);
+        }
+        /* Dropdown Menu */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none; position: absolute; right: 0; background-color: #1e293b;
+            min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1; border-radius: 0.5rem; border: 1px solid #334155;
+        }
+        .dropdown-content a { color: #cbd5e1; padding: 12px 16px; text-decoration: none; display: block; text-align: left; }
+        .dropdown-content a:hover { background-color: #334155; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .logo-bg { background-color: rgba(255, 255, 255, 0.05); }
+
+        .news-item.hidden { display: none; }
+        .show-more-btn { cursor: pointer; }
+
+        /* Visited Country Map Style */
+        .country {
+            fill: #334155; /* slate-700 */
+            stroke: #0f172a; /* slate-900 */
+            stroke-width: 0.5;
+            transition: fill 0.3s;
+        }
+        .country.visited {
+            fill: #38bdf8; /* sky-400 */
+        }
+        
+        /* Word Cloud Styling */
+        .word-cloud {
+            line-height: 2.8;
+            word-spacing: 0.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-effect">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-3">
+                <img src="media/favicon.png" alt="Almobron AI Logo" class="w-8 h-8 rounded-full">
+                <span class="text-xl font-bold text-white">Al Arafat</span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <nav id="main-nav" class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#experience" class="hover:text-sky-400 transition-colors">Experience</a>
+                    <a href="#projects" class="hover:text-sky-400 transition-colors">Projects</a>
+                    <a href="#education" class="nav-item-dynamic hover:text-sky-400 transition-colors">Education</a>
+                    <a href="#publications" class="nav-item-dynamic hover:text-sky-400 transition-colors">Publications</a>
+                    <a href="#cv" class="nav-item-dynamic hover:text-sky-400 transition-colors">CV</a>
+                    <div id="more-dropdown" class="dropdown hidden">
+                        <button class="hover:text-sky-400 transition-colors flex items-center">
+                            More <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="dropdown-menu" class="dropdown-content">
+                            <!-- Dynamic links will be injected here -->
+                        </div>
+                    </div>
+                </nav>
+                <a href="#contact" class="hidden md:inline-block border border-sky-500 text-sky-500 font-bold text-sm py-2 px-4 rounded-lg hover:bg-sky-500 
+                hover:text-white transition-colors">Contact</a>
+                <a href="https://calendly.com/al-arafat/30min" target="_blank" rel="noopener noreferrer" class="hidden md:inline-block bg-sky-500 text-white 
+                font-bold text-sm py-2 px-4 rounded-lg hover:bg-sky-600 transition-colors">Book a Call</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center px-6 py-24">
+            <div class="max-w-5xl mx-auto">
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mx-auto bg-slate-700 flex items-center justify-center border-4 border-sky-500 mb-6">
+                    <img src="media/alarafat.jpg" alt="Al Arafat" class="w-full h-full object-cover">
+                </div>
+                <h1 class="text-3xl md:text-6xl font-bold text-white leading-tight">AI & Vision Lead • Founder</h1>
+                <h2 class="mt-4 text-xl md:text-2xl gradient-text font-semibold">Building the Next Generation of Generative AI Ventures</h2>
+                <p class="mt-6 max-w-2xl mx-auto text-slate-400">10+ years of experience shipping production-grade AI systems, from R&D to deployment. | ex-Toyota, ex-Sony</p>
+                <div class="mt-10 flex justify-center space-x-6">
+                    <a href="https://linkedin.com/in/alarafat" target="_blank" class="text-slate-400 hover:text-sky-400 transition-colors" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin fa-lg"></i>
+                    </a>
+                    <a href="https://github.com/alarafat" target="_blank" class="text-slate-400 hover:text-sky-400 transition-colors" aria-label="GitHub">
+                        <i class="fab fa-github fa-lg"></i>
+                    </a>
+                    <a href="https://scholar.google.com/citations?user=83RQW34AAAAJ" target="_blank" class="text-slate-400 hover:text-sky-400 transition-colors" aria-label="Google Scholar">
+                        <i class="fas fa-graduation-cap fa-lg"></i>
+                    </a>
+                    <a href="mailto:al.arafat@outlook.com" class="text-slate-400 hover:text-sky-400 transition-colors" aria-label="Email">
+                        <i class="fas fa-envelope fa-lg"></i>
+                    </a>
+                </div>
+
+                <!-- Expertise Section -->
+                <div id="expertise" class="mt-16">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                        <div class="expertise-card rounded-lg p-4 text-center">
+                            <div class="text-sky-400 text-3xl mb-2"><i class="fas fa-lightbulb"></i></div>
+                            <h3 class="text-md font-bold text-white">Entrepreneurship</h3>
+                        </div>
+                        <div class="expertise-card rounded-lg p-4 text-center">
+                            <div class="text-sky-400 text-3xl mb-2"><i class="fas fa-brain"></i></div>
+                            <h3 class="text-md font-bold text-white">Generative AI</h3>
+                        </div>
+                        <div class="expertise-card rounded-lg p-4 text-center">
+                            <div class="text-sky-400 text-3xl mb-2"><i class="fas fa-eye"></i></div>
+                            <h3 class="text-md font-bold text-white">Computer Vision</h3>
+                        </div>
+                        <div class="expertise-card rounded-lg p-4 text-center">
+                            <div class="text-sky-400 text-3xl mb-2"><i class="fas fa-cogs"></i></div>
+                            <h3 class="text-md font-bold text-white">System Design</h3>
+                        </div>
+                        <div class="expertise-card rounded-lg p-4 text-center">
+                            <div class="text-sky-400 text-3xl mb-2"><i class="fas fa-rocket"></i></div>
+                            <h3 class="text-md font-bold text-white">MLOps</h3>
+                        </div>
+                        <div class="expertise-card rounded-lg p-4 text-center">
+                            <div class="text-sky-400 text-3xl mb-2"><i class="fas fa-users"></i></div>
+                            <h3 class="text-md font-bold text-white">Leadership</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About & News -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                    <div id="about-hero" class="card-glass-effect rounded-lg p-6"><h3 class="text-xl font-bold text-white mb-4">About Me</h3><div class="text-slate-400 space-y-4 text-sm leading-relaxed">
+                        <p>I'm a result-driven AI Lead with over a decade of experience delivering production-grade AI systems for world-class 
+                            companies like <span class="font-bold">Toyota</span> and <span class="font-bold">Sony</span>.
+                        </p>
+                        <p>This hands-on experience, from optimizing models for embedded systems to leading multi-modal GenAI projects, has given me a 
+                            clear vision of the challenges and opportunities in applied AI. Through my venture, <span class="font-bold">Almobron AI</span>, I prototype and deliver applied AI solutions 
+                            bridging research and production for clients and collaborators.
+                        </p>
+                    </div>
+                </div>
+                    
+                <div id="news-hero" class="card-glass-effect rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Latest News</h3>
+                    <div id="news-list" class="space-y-4">
+                        <div class="news-item flex items-start space-x-3">
+                            <time class="text-xs font-medium text-sky-400 whitespace-nowrap pt-1">Oct '25</time>
+                            <p class="text-slate-400 text-sm">Launched my new portfolio website to showcase my journey in AI and latest ventures.</p>
+                        </div>
+                        <div class="news-item flex items-start space-x-3">
+                            <time class="text-xs font-medium text-sky-400 whitespace-nowrap pt-1">Oct '25</time>
+                            <p class="text-slate-400 text-sm">Presented <span class="font-bold">GOLPO</span> & <span class="font-bold">AuraFit</span> to <span class="font-bold">VLAIO</span>, exploring local R&D funding opportunities.</p>
+                        </div>
+                        <div class="news-item flex items-start space-x-3">
+                            <time class="text-xs font-medium text-sky-400 whitespace-nowrap pt-1">Oct '25</time>
+                            <p class="text-slate-400 text-sm">Concluded my work at <span class="font-bold">Toyota</span> as a contractor for a real-time user satisfaction system.</p>
+                        </div>
+                        <div class="news-item hidden flex items-start space-x-3">
+                            <time class="text-xs font-medium text-sky-400 whitespace-nowrap pt-1">May '24</time>
+                            <p class="text-slate-400 text-sm">Founded <span class="font-bold">Almobron AI</span> to focus on building the next generation of Generative AI systems.</p>
+                        </div>
+                        
+                    </div>
+                    <div class="mt-4">
+                        <button id="show-more-btn" class="show-more-btn text-sky-400 font-semibold text-xs hover:text-sky-300">Show More</button>
+                    </div>
+                </div>
+            </div>
+                 
+            <!-- Word Cloud -->
+            <div class="word-cloud mt-12 p-8 card-glass-effect rounded-lg">
+                <span class="text-5xl font-bold text-sky-400">GenAI</span>
+                <span class="text-4xl text-white">Computer Vision</span>
+                <span class="text-5xl font-bold gradient-text">VLM</span>
+                <span class="text-2xl text-slate-400">Multi-modal</span>
+                <span class="text-3xl text-white">PyTorch</span>
+                <span class="text-4xl font-bold text-sky-400">Optimization</span>
+                <span class="text-2xl text-slate-400">ONNX</span>
+                <span class="text-3xl text-white">MLOps</span>
+                <span class="text-4xl gradient-text">Deployment</span>
+                <span class="text-2xl text-slate-400">3D Perception</span>
+                <span class="text-3xl text-white">LLM</span>
+                <span class="text-2xl text-slate-400">Embedded Systems</span>
+                <span class="text-4xl text-sky-400">Production</span>
+                <span class="text-3xl text-white">TensorFlow</span>
+                <span class="text-2xl text-slate-400">Agentic AI</span>
+                <span class="text-3xl gradient-text">RAG</span>
+                <span class="text-2xl text-white">Real-time</span>
+                <span class="text-3xl text-sky-400">C++</span>
+                <span class="text-2xl text-white">Docker</span>
+                <span class="text-3xl text-slate-400">text-to-video</span>
+                <span class="text-2xl text-white">Git</span>
+                <span class="text-3xl text-sky-400">CI/CD</span>
+                <span class="text-4xl gradient-text">OpenCV</span>
+                <span class="text-2xl text-slate-400">Pose Estimation</span>
+                <span class="text-3xl text-white">Object Detection</span>
+                <span class="text-4xl text-sky-400">Quantization</span>
+                <span class="text-2xl text-white">LangGraph</span>
+                <span class="text-3xl text-slate-400">vLLM</span>
+                <span class="text-2xl text-white">ChromaDB</span>
+                <span class="text-3xl gradient-text">AWS</span>
+             </div>
+
+            </div>
+        </section>
+
+        <div class="container mx-auto px-6">
+            <!-- Experience Section --><section id="experience" class="py-20 md:py-24">
+                <h2 class="text-3xl font-bold text-white text-center">Experience</h2>
+                <div class="mt-12 max-w-5xl mx-auto">
+
+                    <div class="flex">
+                        <div class="w-1/5 pt-1 pr-8 text-right">
+                            <time class="text-sm font-semibold text-slate-200">May 2024 - Present</time>
+                        </div>
+                        <div class="relative w-4/5 pb-12 pl-8 border-l-2 border-slate-700">
+                            <span class="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-sky-400 ring-4 ring-sky-400/20"></span>
+                            <div class="flex items-center mb-2">
+                                <div class="w-8 h-8 mr-3 rounded-full flex items-center justify-center logo-bg">
+                                    <img src="media/logo_almobron_cropped.jpg" alt="Almobron AI Logo" class="rounded-full object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">Founder & Principal AI Consultant</h3>
+                                    <p class="text-sm font-medium text-sky-400">Almobron AI</p>
+                                </div>
+                            </div>
+                            <!-- Nested Client Timeline -->
+                            <div class="mt-4 p-4 rounded-lg border border-slate-700 bg-slate-800/50">
+                                <h4 class="font-semibold text-slate-200 text-sm mb-4">Key Client Engagements:</h4>
+                                <div class="relative">
+                                    <!-- Vertical line for nested timeline -->
+                                    <div class="absolute left-3.5 top-2 h-full border-l-2 border-slate-600"></div>
+                                    
+                                    <!-- Nested Item: Future Client Placeholder -->
+                                    <!-- <div class="relative mb-6 pl-10">
+                                        <span class="absolute left-0 top-1.5 flex h-2 w-2 items-center justify-center rounded-full bg-sky-400"></span>
+                                        <div class="flex items-center">
+                                            <div class="w-6 h-6 mr-2 rounded-full flex items-center justify-center logo-bg">
+                                                <i class="fas fa-plus text-sky-400"></i>
+                                            </div>
+                                            <p class="text-sm font-medium text-slate-400 italic">Future Client Engagement...</p>
+                                        </div>
+                                    </div> -->
+
+                                    <!-- Nested Item: Toyota -->
+                                    <div class="relative pl-10">
+                                        <span class="absolute left-0 top-1.5 flex h-2 w-2 items-center justify-center rounded-full bg-sky-500"></span>
+                                        <div class="flex items-center">
+                                            <div class="w-6 h-6 mr-2 rounded-full flex items-center justify-center logo-bg">
+                                                <img src="media/logo_toyota.jpg" alt="Toyota Logo" class="rounded-full object-cover">
+                                            </div>
+                                            <p class="text-sm font-medium text-sky-400">Toyota Motor Europe <span class="text-slate-500 font-normal">(Contractor)</span></p>
+                                        </div>
+                                        <time class="block my-1 text-xs font-normal leading-none text-slate-400">May 2024 - Oct 2025</time>
+                                        <p class="mt-1 text-slate-300 text-sm">Led a full-cycle multi-modal GenAI project for user behavior understanding.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <div class="w-1/5 pt-1 pr-8 text-right">
+                            <time class="text-sm font-semibold text-slate-400">Dec. 2016 - Apr. 2024</time>
+                        </div>
+                        <div class="relative w-4/5 pb-12 pl-8 border-l-2 border-slate-700">
+                            <span class="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-slate-700"></span>
+                            <div class="flex items-center mb-2">
+                                <div class="w-8 h-8 mr-3 rounded-full flex items-center justify-center logo-bg">
+                                    <img src="media/logo_sony.jpg" alt="Sony Logo" class="rounded-full object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">R&D Engineer, Computer Vision</h3>
+                                    <p class="text-sm font-medium text-sky-400">Sony Depthsensing Solutions</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-300">Designed and deployed ML models for real-time 3D perception, driver monitoring, and facial analysis. 
+                                Oversaw end-to-end pipelines including data acquisition, annotation, model training, quantization (ONNX, OpenVINO), and deployment 
+                                in embedded systems</p>
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <div class="w-1/5 pt-1 pr-8 text-right">
+                            <time class="text-sm font-semibold text-slate-400">2013 - 2016</time>
+                        </div>
+                        <div class="relative w-4/5 pb-12 pl-8 border-l-2 border-slate-700">
+                            <span class="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-slate-700"></span>
+                            <div class="flex items-center mb-2">
+                                <!-- <div class="w-8 h-8 mr-3 rounded-full flex items-center justify-center text-slate-400 text-sm logo-bg">
+                                    <i class="fas fa-university"></i>
+                                </div> -->
+                                <div class="w-8 h-8 mr-3 rounded-full flex items-center justify-center logo-bg">
+                                    <img src="media/logo_bubt.png" alt="BUBT Logo" class="rounded-full object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">Lecturer, Computer Science & Engineering</h3>
+                                    <p class="text-sm font-medium text-sky-400">Bangladesh University of Business & Technology</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-300">Taught core undergraduate courses in Artificial Intelligence, Machine Learning, and Pattern Recognition. Mentored student 
+                                research projects and contributed to curriculum development.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="flex">
+                        <div class="w-1/5 pt-1 pr-8 text-right">
+                            <time class="text-sm font-semibold text-slate-400">2012 - 2013</time>
+                        </div>
+                        <div class="relative w-4/5 pl-8 border-l-2 border-slate-700">
+                            <span class="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-slate-700"></span>
+                            <div class="flex items-center mb-2">
+                                <!-- <div class="w-8 h-8 mr-3 rounded-full flex items-center justify-center text-slate-400 text-sm logo-bg">
+                                    <i class="fas fa-university"></i>
+                                </div> -->
+                                <div class="w-8 h-8 mr-3 rounded-full flex items-center justify-center logo-bg">
+                                    <img src="media/logo_diu.png" alt="BUBT Logo" class="rounded-full object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">Lecturer, Computer Science & Engineering</h3>
+                                    <p class="text-sm font-medium text-sky-400">Dhaka International University</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-300">Delivered undergraduate courses in Artificial Intelligence and Structured Programming. Mentored student 
+                                research projects and contributed to curriculum development.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section --><section id="projects" class="py-20 md:py-24">
+                 <h2 class="text-3xl font-bold text-white text-center mb-12">Featured Projects</h2>
+                 <div id="projects-scroll" class="horizontal-scroll-container"><div id="projects-wrapper" class="horizontal-scroll-wrapper flex gap-6 md:gap-8 pb-4">
+                    <div class="project-card card-glass-effect rounded-lg p-6 flex flex-col">
+                        <img src="media/aurafit_logo.png" alt="AuraFit" class="w-full h-48 rounded-md object-cover mb-4">
+                        <h3 class="text-xl font-bold text-white">AuraFit</h3>
+                        <p class="mt-2 text-sm text-sky-400">See it in your size. Style with perfect pairing.</p>
+                        <p class="mt-4 text-slate-400 flex-grow">A multi-modal, agentic RAG system using LangGraph and VLMs to provide personalized fashion advice.</p>
+                    </div>
+                    <div class="project-card card-glass-effect rounded-lg p-6 flex flex-col">
+                        <img src="media/Golpo-logo.png" alt="GOLPO Project" class="w-full h-48 rounded-md object-contain mb-4">
+                        <h3 class="text-xl font-bold text-white">GOLPO</h3>
+                        <p class="mt-2 text-sm text-sky-400">Making Learning an Interactive Adventure Using AI.</p>
+                        <p class="mt-4 text-slate-400 flex-grow">R&D into text-to-video and diffusion models for creating structured, interactive educational content.</p>
+                    </div>
+                    <div class="project-card card-glass-effect rounded-lg p-6 flex flex-col">
+                        <img src="https://placehold.co/600x400/1e293b/94a3b8?text=Emotion+Recognition" alt="DatesNet Project" 
+                        class="w-full h-48 rounded-md object-cover mb-4">
+                        <h3 class="text-xl font-bold text-white">DatesNet</h3>
+                        <p class="mt-2 text-sm text-sky-400">Facial Emotion Recognition</p>
+                        <p class="mt-4 text-slate-400 flex-grow">A novel U-Net-based architecture to classify emotions using soft-label probabilities for improved 
+                            robustness.</p>
+                    </div>
+                    <div class="project-card card-glass-effect rounded-lg p-6 flex flex-col">
+                        <img src="https://placehold.co/600x400/1e293b/94a3b8?text=Autonomous+Systems" alt="Autonomous Vehicle Project" 
+                        class="w-full h-48 rounded-md object-cover mb-4">
+                        <h3 class="text-xl font-bold text-white">Autonomous Navigation</h3>
+                        <p class="mt-2 text-sm text-sky-400">B.Sc Thesis Project</p>
+                        <p class="mt-4 text-slate-400 flex-grow">Built a self-driving robot using a Concurrent Self-Organizing Map classifier and remote control 
+                            via DTMF signals over GSM.</p>
+                    </div>
+                    <div class="project-card card-glass-effect rounded-lg p-6 flex flex-col">
+                        <img src="https://placehold.co/600x400/1e293b/94a3b8?text=Aircraft+Inspection" alt="Aircraft Inspection Project" 
+                        class="w-full h-48 rounded-md object-cover mb-4">
+                        <h3 class="text-xl font-bold text-white">Aircraft Parts Inspection</h3>
+                        <p class="mt-2 text-sm text-sky-400">M.Sc Thesis Project (with Airbus)</p>
+                        <p class="mt-4 text-slate-400 flex-grow">Developed a CV system for automated inspection of Airbus A320 exterior parts from RGB images.</p>
+                    </div>
+                 </div>
+                 <!-- Scroll Controls -->
+                 <button id="projects-prev" aria-label="Scroll projects left" class="hidden absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-800/70 hover:bg-slate-800 text-white items-center justify-center shadow">
+                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M15.53 19.53a.75.75 0 0 1-1.06 0l-7-7a.75.75 0 0 1 0-1.06l7-7a.75.75 0 1 1 1.06 1.06L9.06 12l6.47 6.47a.75.75 0 0 1 0 1.06z" clip-rule="evenodd"/></svg>
+                 </button>
+                 <button id="projects-next" aria-label="Scroll projects right" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-800/70 hover:bg-slate-800 text-white items-center justify-center shadow">
+                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.47 4.47a.75.75 0 0 1 1.06 0l7 7a.75.75 0 0 1 0 1.06l-7 7a.75.75 0 1 1-1.06-1.06L14.94 12 8.47 5.53a.75.75 0 0 1 0-1.06z" clip-rule="evenodd"/></svg>
+                 </button>
+                 </div>
+            </section>
+            
+            <!-- Education & Awards Section -->
+            <section id="education" class="py-20 md:py-24">
+                <h2 class="text-3xl font-bold text-white text-center">Education & Awards</h2>
+                <div class="mt-12 max-w-3xl mx-auto space-y-8">
+                    <div class="card-glass-effect rounded-lg p-6 flex items-center space-x-6">
+                        <div class="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center logo-bg">
+                            <img src="media/heriot_watt_logo.jpeg" alt="Erasmus Mundus Logo" class="rounded-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-white">M.Sc in Computer Vision and Robotics (VIBOT)</h3>
+                            <p class="text-sm text-sky-400 mt-1">Heriot-Watt University, Edinburgh, UK (Erasmus Mundus Consortium)</p>
+                            <time class="text-xs text-slate-500">Sep 2014 - Jun 2016</time>
+                            <p class="mt-3 text-slate-400 text-sm">Thesis: Developed a CV system for automated aircraft inspection in partnership with <span class="font-bold">Airbus Group</span>.</p>
+                        </div>
+                    </div>
+                    <div class="card-glass-effect rounded-lg p-6 flex items-center space-x-6">
+                        <div class="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center logo-bg">
+                            <img src="media/ruet_logo.png" alt="RUET Logo" class="rounded-full object-cover">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-white">B.Sc in Computer Science and Engineering</h3>
+                            <p class="text-sm text-sky-400 mt-1">Rajshahi University of Engineering & Technology (RUET)</p>
+                            <time class="text-xs text-slate-500">Feb 2008 - Sep 2012</time>
+                        </div>
+                    </div>
+
+                    <div class="card-glass-effect rounded-lg p-6">
+                        <div class="flex items-center space-x-6">
+                            <div class="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center logo-bg">
+                                <i class="fas fa-award text-3xl text-sky-400"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-white">Scholarships & Awards</h3>
+                                <p class="text-sm text-sky-400 mt-1">Recognized for academic and research excellence.</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pl-4 border-l-2 border-slate-700 ml-8 space-y-3">
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-200">Erasmus+ Mundus Scholarship (2014-2016)</p>
+                                <p class="text-slate-400">Awarded by the European Commission; 1 of 4 scholars selected globally for the VIBOT 
+                                    program track.
+                                </p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-200">Best Student Award - Dept. of CSE (2010)</p>
+                                <p class="text-slate-400">Recognized as the top-performing student in the Computer Science and Engineering department at RUET.</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="font-semibold text-slate-200">University Merit Scholarship (2010-2012)</p>
+                                <p class="text-slate-400">Awarded for academic excellence for three consecutive years during undergraduate studies.</p>
+                            </div>
+                        </div>
+                    </div>
+     
+
+
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Publications & Patents Section -->
+            <section id="publications" class="py-20 md:py-24">
+                <h2 class="text-3xl font-bold text-white text-center">Publications & Patents</h2>
+                <div class="mt-12 max-w-3xl mx-auto space-y-8">
+                   
+                    <a href="./papers/toyota_patent_placeholder.pdf" download="Arafat_Toyota_Patent_Summary.pdf "
+                    class="card-glass-effect rounded-lg p-6 flex items-start space-x-6 hover:bg-slate-700/50 transition-colors">
+                    <div class="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center text-slate-800 logo-bg">
+                        <i class="fas fa-file-alt text-3xl text-sky-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-sky-400">2024 (Filed)</p>
+                        <h3 class="font-semibold text-white mt-1">Real-time Compueter Vision System (Patent - Filed)</h3>
+                        <p class="mt-3 text-slate-400 text-sm">A. Arafat, et al. | Toyota Motor Europe. | Filed for a real-time system using multi-modal deep 
+                            learning.</p>
+                    </div>
+                    </a>
+
+                    <a href="./papers/meco_article_4pages.pdf" download="Arafat_MECO_2016.pdf" 
+                    class="card-glass-effect rounded-lg p-6 flex items-start space-x-6">
+                    <div class="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center text-slate-800 logo-bg">
+                        <i class="fas fa-file-alt text-3xl text-sky-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-sky-400">2016</p>
+                        <h3 class="font-semibold text-white mt-1">Airplane tire inspection by image processing technique</h3>
+                        <p class="mt-3 text-slate-400 text-sm">Jovancevic I., Arafat A., et al. | Published in 5th Mediterranean Conference on Embedded 
+                            Computing (MECO).</p>
+                    </div>
+                    </a>
+                    
+                    <a href="./papers/p411.pdf" download="Arafat_ICECE_2012.pdf" 
+                    class="card-glass-effect rounded-lg p-6 flex items-start space-x-6 hover:bg-slate-700/50 transition-colors">
+                    <div class="w-16 h-16 flex-shrink-0 rounded-full flex items-center justify-center text-slate-800 logo-bg">
+                        <i class="fas fa-file-alt text-3xl text-sky-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-sky-400">2012</p>
+                        <h3 class="font-semibold text-white mt-1">Intelligent Autonomous Vehicle Navigated by using Artificial Neural Network</h3>
+                        <p class="mt-3 text-slate-400 text-sm">Firoz Mahmud, Al Arafat, et al. | Published in International Conference on Electrical & 
+                            Computer Engineering (ICECE).</p>
+                    </div>
+                    </a>
+                </div>
+            </section>
+            
+            <!-- CV Download Section -->
+            <section id="cv" class="py-20 md:py-24 text-center">
+                 <div class="card-glass-effect rounded-lg p-8 max-w-3xl mx-auto">
+                     <h2 class="text-3xl font-bold text-white">My CV</h2>
+                     <p class="mt-4 max-w-xl mx-auto text-slate-400">For a more detailed look at my experience, projects, and publications, please feel free to download 
+                        my full CV.</p>
+                     <a href="./resume.pdf" download="Al_Arafat_CV.pdf" class="mt-8 inline-block bg-slate-700 text-white font-bold py-3 px-8 rounded-lg hover:bg-slate-600 transition-colors">Download CV</a>
+                 </div>
+            </section>
+
+            <!-- Hobby Section -->
+            <section id="hobbies" class="py-20 md:py-24">
+                <h2 class="text-3xl font-bold text-white text-center">Beyond the Code</h2>
+                <div class="mt-12 max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-center">
+                        <div class="space-y-4 text-slate-400 text-lg">
+                             <p>When I'm not building AI systems, I'm passionate about exploring the world through a different lens. As an avid 
+                                <span class="text-sky-400">photographer</span> and <span class="text-sky-400">traveler</span>, I love capturing unique moments 
+                                and diverse landscapes.</p>
+                             <p>I'm also a dedicated <span class="text-sky-400">car enthusiast</span>, enjoying everything from long drives to hands-on DIY 
+                                maintenance and modifications on my own car.</p>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <img src="media/IMG_6944.JPEG" alt="Photography sample 1" class="rounded-lg object-cover w-full h-full aspect-[4/3]">
+                            <img src="media/IMG_2211.JPEG" alt="Photography sample 2" class="rounded-lg object-cover w-full h-full aspect-[4/3]">
+                            <img src="media/IMG_9145.JPEG" alt="Photography sample 3" class="rounded-lg object-cover w-full h-full aspect-[4/3]">
+                            <img src="media/IMG_7939.JPEG" alt="Photography sample 4" class="rounded-lg object-cover w-full h-full aspect-[4/3]">
+                            <img src="media/IMG_6944.JPEG" alt="Photography sample 5" class="rounded-lg object-cover w-full h-full aspect-[4/3]">
+                            <img src="media/IMG_2211.JPEG" alt="Photography sample 6" class="rounded-lg object-cover w-full h-full aspect-[4/3]">
+                        </div>
+                    </div>
+                    <div class="mt-16">
+                        <h3 class="text-xl font-bold text-white text-center mb-4">Countries I've Visited</h3>
+                        <div id="map-container" class="w-full h-auto max-w-3xl mx-auto"></div>
+                        <!-- <div id="visited-map" class="w-full max-w-4xl mx-auto" style="height: 420px;"></div> -->
+                        <!-- SVG World Map will be injected here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="py-20 md:py-24">
+                 <h2 class="text-3xl font-bold text-white text-center">Let's Build Together</h2>
+                 <p class="mt-4 max-w-xl mx-auto text-slate-400 text-center">I'm always open to discussing new projects, partnerships, or leadership opportunities. 
+                    If you have an ambitious challenge in the AI space, I'd love to hear from you.</p>
+                 
+                 <form id="contact-form" class="mt-12 max-w-xl mx-auto" action="https://formspree.io/f/xeordpwn" method="POST">
+                    <div id="form-status" class="mb-4 text-center"></div>
+                    <div class="space-y-6">
+                        <div>
+                            <label for="name" class="sr-only">Name</label>
+                            <input type="text" name="name" id="name" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white 
+                            focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder="Your Name">
+                        </div>
+                         <div>
+                            <label for="email" class="sr-only">Email</label>
+                            <input type="email" name="_replyto" id="email" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white 
+                            focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder="Your Email">
+                        </div>
+                         <div>
+                            <label for="message" class="sr-only">Message</label>
+                            <textarea name="message" id="message" rows="5" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white 
+                            focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder="Your Message"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button type="submit" class="bg-sky-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-sky-600 transition-colors disabled:opacity-50 
+                        disabled:cursor-not-allowed">Send Message</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer --><footer class="py-6 border-t border-slate-800">
+        <div class="container mx-auto px-6 text-center text-slate-500 text-sm">
+            &copy; 2025 Al Arafat. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetSection = document.querySelector(this.getAttribute('href'));
+                if(targetSection){
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Contact Form Submission
+        const form = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            const data = new FormData(form);
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST', body: data, headers: {'Accept': 'application/json'}
+                });
+                if (response.ok) {
+                    form.reset();
+                    formStatus.innerHTML = '<p class="text-green-400">Thank you! Your message has been sent.</p>';
+                } else {
+                    const result = await response.json();
+                    if (Object.hasOwn(result, 'errors')) {
+                        formStatus.innerHTML = `<p class="text-red-400">${result["errors"].map(error => error["message"]).join(", ")}</p>`;
+                    } else {
+                        formStatus.innerHTML = '<p class="text-red-400">Oops! There was a problem sending your message.</p>';
+                    }
+                }
+            } catch (error) {
+                formStatus.innerHTML = '<p class="text-red-400">Oops! There was a problem sending your message.</p>';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Message';
+                 setTimeout(() => { formStatus.innerHTML = ''; }, 5000);
+            }
+        });
+
+        // News Section "Show More" functionality
+        const showMoreBtn = document.getElementById('show-more-btn');
+        const newsList = document.getElementById('news-list');
+        if(showMoreBtn && newsList){
+            const hiddenItems = newsList.querySelectorAll('.news-item.hidden');
+            if(hiddenItems.length === 0){
+                showMoreBtn.style.display = 'none';
+            } else {
+                showMoreBtn.addEventListener('click', function() {
+                    hiddenItems.forEach(item => {
+                        item.classList.remove('hidden');
+                    });
+                    showMoreBtn.style.display = 'none';
+                });
+            }
+        }
+        
+        // World Map
+        const visitedCountries = ['bangladesh', 'france', 'spain', 'united kingdom', 'belgium', 'germany', 'italy', 'netherlands', 'norway', 
+            'sweden', 'finland', 'united states', 'austria', 'croatia', 'bosnia', 'poland', 'hungary', 'czech', 'switzerland', 'slovenia',
+            'slovakia', 'denmark'
+        ]; // Use lowercase full names; multi-word names supported
+        const mapContainer = document.getElementById('map-container');
+        
+        fetch('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')
+            .then(response => response.text())
+            .then(svgData => {
+                if(mapContainer){
+                    mapContainer.innerHTML = svgData;
+                    const svg = mapContainer.querySelector('svg');
+                    if (svg) {
+                        svg.setAttribute('width', '100%');
+                        svg.setAttribute('height', '100%');
+                        svg.setAttribute('viewBox', '0 0 1000 525');
+                        
+                        // Helper: normalize names to handle hyphens/underscores/extra spaces
+                        const normalizeName = (s) => (s || '')
+                            .toLowerCase()
+                            .replace(/[^a-z]/g, ' ')     // replace non-letters with space
+                            .replace(/\s+/g, ' ')        // collapse multiple spaces
+                            .trim();
+
+                        // Build a set of normalized visited names, including common aliases
+                        const aliases = {
+                            'united states': ['united states of america', 'usa', 'us'],
+                            'united kingdom': ['great britain', 'uk', 'britain', 'england'],
+                            'czech republic': ['czechia']
+                        };
+                        const visitedSet = new Set();
+                        visitedCountries.forEach(name => {
+                            const key = normalizeName(name);
+                            visitedSet.add(key);
+                            if (aliases[key]) {
+                                aliases[key].forEach(a => visitedSet.add(normalizeName(a)));
+                            }
+                        });
+
+                        const paths = svg.querySelectorAll('path');
+
+                        paths.forEach(path => {
+                            path.classList.add('country');
+                            
+                            // Identify country by available attributes; SVG uses full lowercase names
+                            const countryRaw = (path.id || 
+                                             path.getAttribute('data-name') || 
+                                             path.getAttribute('class') ||
+                                             path.getAttribute('title') || '');
+                            const countryId = normalizeName(countryRaw);
+                            
+                            // Exact match against provided lowercase country names
+                            const isVisited = visitedSet.has(countryId);
+                            
+                            if (isVisited) {
+                                path.classList.add('visited');
+                                path.style.fill = '#38bdf8'; // sky-400 for visited countries
+                            } else {
+                                path.style.fill = '#334155'; // slate-700 for non-visited countries
+                            }
+                            
+                            path.addEventListener('mouseover', () => {
+                               if(path.classList.contains('visited')) {
+                                   path.style.fill = '#818cf8'; // Lighter hover for visited
+                               } else {
+                                   path.style.fill = '#475569'; // Lighter hover for not visited
+                               }
+                            });
+                            path.addEventListener('mouseout', () => {
+                               if(path.classList.contains('visited')) {
+                                   path.style.fill = '#38bdf8';
+                               } else {
+                                   path.style.fill = '#334155';
+                               }
+                            });
+                        });
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching map:', error));
+ 
+
+        // const visitedCountries = ['bd','fr','es','gb','be','de','it','nl'];
+
+        // // Make a set for quick lookup
+        // const visitedSet = new Set(visitedCountries.map(c => c.toLowerCase()));
+
+        // // Build a per-country color map (optional—lets you tint non-visited too)
+        // const regionColors = {};
+        // // world map uses lowercase country codes like 'us','be','bd', etc.
+        // // We'll tint visited sky-blue, others slate
+        // window.jsVectorMap && window.addEventListener('DOMContentLoaded', () => {
+        //     new jsVectorMap({
+        //     selector: "#map-container",
+        //     map: "world",
+        //     zoomOnScroll: false,
+        //     draggable: false,
+        //     regionStyle: {
+        //         initial: { fill: '#334155' },     // slate-700 (unvisited)
+        //         hover:   { fill: '#475569' },     // slate-600 on hover
+        //         selected:{ fill: '#38bdf8' }      // sky-400 (visited)
+        //     },
+        //     regionsSelectable: false,
+        //     // Color visited via series (lets you set colors per region)
+        //     series: {
+        //         regions: [{
+        //         attribute: 'fill',
+        //         values: (() => {
+        //             const vals = {};
+        //             // jsvectormap exposes all region codes in lower case (e.g., 'be', 'fr')
+        //             // We'll set visited to sky-blue; others fall back to initial
+        //             const allRegions = jsVectorMap.maps.world.paths;
+        //             Object.keys(allRegions).forEach(code => {
+        //             if (visitedSet.has(code)) vals[code] = '#38bdf8';
+        //             });
+        //             return vals;
+        //         })()
+        //         }]
+        //     },
+        //     labels: {
+        //         regions: {
+        //         render: (code) => code.toUpperCase(), // tooltip will show country code; you can map to names if you want
+        //         }
+        //     },
+        //     onRegionTooltipShow: (tooltip, code) => {
+        //         // Optional: nicer names for tooltips
+        //         const name = jsVectorMap.maps.world.names && jsVectorMap.maps.world.names[code] || code.toUpperCase();
+        //         const visited = visitedSet.has(code) ? ' (visited)' : '';
+        //         tooltip.text(`${name}${visited}`);
+        //     }
+        //     });
+        // });
+
+
+        // Dynamic Navigation
+        function handleNavigation() {
+            const nav = document.getElementById('main-nav');
+            if (!nav) return;
+            const dynamicItems = nav.querySelectorAll('.nav-item-dynamic');
+            const dropdown = document.getElementById('more-dropdown');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const screenWidth = window.innerWidth;
+
+            // Define a breakpoint. You can adjust this value.
+            const breakpoint = 1100; 
+
+            // Always clear the dropdown menu first to prevent accumulation
+            dropdownMenu.innerHTML = '';
+
+            if (screenWidth < breakpoint) {
+                dropdown.classList.remove('hidden');
+                dynamicItems.forEach(item => {
+                    item.style.display = 'none';
+                    const link = item.cloneNode(true);
+                    link.style.display = 'block';
+                    dropdownMenu.appendChild(link);
+                });
+            } else {
+                dropdown.classList.add('hidden');
+                dynamicItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+            }
+        }
+
+        window.addEventListener('resize', handleNavigation);
+        document.addEventListener('DOMContentLoaded', handleNavigation);
+
+        // Projects horizontal scroll controls
+        (function(){
+            const wrapper = document.getElementById('projects-wrapper');
+            const container = document.getElementById('projects-scroll');
+            const prevBtn = document.getElementById('projects-prev');
+            const nextBtn = document.getElementById('projects-next');
+            if(!wrapper || !container || !prevBtn || !nextBtn) return;
+
+            // Ensure buttons are flex when shown
+            [prevBtn, nextBtn].forEach(btn => btn.classList.add('flex'));
+
+            const updateButtons = () => {
+                const hasOverflow = wrapper.scrollWidth > wrapper.clientWidth + 2;
+                const rect = container.getBoundingClientRect();
+                const inView = rect.top < window.innerHeight && rect.bottom > 0;
+                const atStart = wrapper.scrollLeft <= 1;
+                const atEnd = Math.ceil(wrapper.scrollLeft + wrapper.clientWidth) >= wrapper.scrollWidth - 1;
+
+                const show = hasOverflow && inView;
+                prevBtn.classList.toggle('hidden', !show || atStart);
+                nextBtn.classList.toggle('hidden', !show || atEnd);
+            };
+
+            const scrollByViewport = (dir) => {
+                wrapper.scrollBy({ left: dir * wrapper.clientWidth, behavior: 'smooth' });
+            };
+
+            prevBtn.addEventListener('click', () => scrollByViewport(-1));
+            nextBtn.addEventListener('click', () => scrollByViewport(1));
+            wrapper.addEventListener('scroll', updateButtons);
+            window.addEventListener('resize', updateButtons);
+            document.addEventListener('scroll', updateButtons, { passive: true });
+            setTimeout(updateButtons, 0);
+        })();
+
+    </script>
+</body>
+</html>
+
